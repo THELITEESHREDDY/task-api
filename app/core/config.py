@@ -1,11 +1,11 @@
-from pydantic_settings import BaseSettings, SettingsCongigDict
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     app_name: str = "Task API"
     database_url: str = "sqlite:///tasks.db"
 
-    model_config = SettingsCongigDict(
+    model_config = SettingsConfigDict(
         env_file=".env",
         extra="ignore",
     )
