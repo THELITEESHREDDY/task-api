@@ -3,8 +3,8 @@ from fastapi import FastAPI,HTTPException, status
 
 from app.repositories.task_repository import TaskRepository
 from app.schemas.task import TaskCreate
-
-
+from app.exceptions.task import TaskNotFoundExceptions
+from app.core.logging import logger
 
 
 
@@ -16,9 +16,10 @@ class TaskService:
 
     
     def create_task(self,db:Session,task:TaskCreate):
+        logger.info("creating task")
         task= self.repository.create(db,task)
         db.commit()
-
+        logger.info("Task created with id=%s", task.id)
         return task
     
     def get_tasks(self, db:Session):
@@ -28,9 +29,8 @@ class TaskService:
         task = self.repository.get_by_id(task_id,db)
 
         if task is None:
-            raise HTTPException(
-                404,
-                "Task not found"
+            raise TaskNotFoundExceptions(
+                task_id
             )
         
         return task
