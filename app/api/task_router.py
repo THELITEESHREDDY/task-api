@@ -3,9 +3,12 @@ from sqlalchemy.orm import Session
 
 
 from app.dependencies.db import get_db
+from app.dependencies.services import get_task_servive
 from app.schemas.task import TaskCreate, TaskResponse
 from app.services.task_services import TaskService
 from app.repositories.task_repository import TaskRepository
+from app.unit_of_work.uow import unit_of_work
+
 
 router = APIRouter(
     prefix="/tasks",
@@ -14,7 +17,7 @@ router = APIRouter(
 
 
 repository = TaskRepository()
-service = TaskService(repository)
+service = TaskService(repository,unit_of_work)
 
 
 @router.post(
@@ -24,9 +27,11 @@ service = TaskService(repository)
 )
 def create_task(
     task:TaskCreate,
-    db:Session = Depends(get_db),
+    service: TaskService = Depends(
+        get_task_servive
+    ),
 ):
-    return service.create_task(db,task)
+    return service.create_task(service,task)
 
 @router.get(
     "",
