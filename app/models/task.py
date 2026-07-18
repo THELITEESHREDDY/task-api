@@ -1,5 +1,7 @@
 from sqlalchemy import Boolean, String
 from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped,mapped_column, relationship
 
 from app.db.database import Base
 
@@ -18,3 +20,6 @@ class Task(Base):
         Boolean,
         default=False
     )
+
+    owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    owner = relationship("User",back_populates="tasks")

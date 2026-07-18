@@ -64,3 +64,11 @@ class TaskService:
         unit_of_work.commit()
 
         return task
+    
+
+    def delete_task(self,task_id:int,db:Session)->None:
+        
+        task = self.repository.get_by_id(task_id,db)
+        self.repository.delete(db,task)
+
+        unit_of_work.commit()
