@@ -8,6 +8,8 @@ from app.schemas.task import TaskCreate, TaskListResponse,TaskResponse
 from app.services.task_services import TaskService
 from app.repositories.task_repository import TaskRepository
 from app.unit_of_work.uow import unit_of_work
+from app.dependencies.auth import get_current_user
+
 
 
 router = APIRouter(
@@ -43,10 +45,11 @@ def get_tasks(
     limit: int = Query(20,ge=1, le=100),
     offset:int =Query(0,ge=0),
     db:Session = Depends(get_task_servive),
+    current_user: User = Depends(get_current_user),
     service: TaskService = Depends(
         get_task_servive
     ),
-)->list[TaskResponse]:
+)->TaskListResponse:
 
     return service.get_tasks(db,limit,offset)
 
@@ -58,6 +61,7 @@ def get_tasks(
 )
 def get_tasks_id(
     task_id:int,
-    db:Session=Depends(get_db)
+    db:Session=Depends(get_db),
+    current_user: User = Depends(get_current_user),
 )->TaskResponse:
-    return service.get_task_by_id(task_id,db)
+    return service.get_task_by_id(task_id,current_user.id,db)

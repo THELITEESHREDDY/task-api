@@ -27,26 +27,10 @@ class TaskRepository:
         completed: bool | None,
         limit: int,
         offset: int,
+        user_id:int
     ):
 
-        stmt = select(Task)
-
-        if completed is not None:
-            stmt = stmt.where(
-                Task.completed == completed
-            )
-
-        stmt = (
-            stmt
-            .order_by(Task.id.desc())
-            .limit(limit)
-            .offset(offset)
-        )
-
-        result = db.execute(stmt)
-
-        return result.scalars().all()
-    
+        return db.query(Task).filter(Task.owner_id==user_id).all()
 
 
     def get_by_id(
