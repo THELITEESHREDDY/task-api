@@ -30,7 +30,7 @@ class AuthService:
             hashed_password=hashed
         )
 
-        created = self.repository.create(
+        created = self.repository.register(
             self.uow.db,
             db_user
         )

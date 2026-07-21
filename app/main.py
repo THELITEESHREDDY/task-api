@@ -10,16 +10,12 @@ Base.metadata.create_all(bind=engine)
 
 
 
-
-
-
-
 app = FastAPI()
 
 register_exception_handler(app)
 app.include_router(task_router)
 app.include_router(auth_router)
+
 @app.get("/")
 def root():
     return {"message" : "Hello Backend"}
-
