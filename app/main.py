@@ -6,7 +6,7 @@ from app.api.task_router import router as task_router
 from app.api.auth_router import router as auth_router
 from app.core.exception_handlers import register_exception_handler
 
-Base.metadata.create_all(bind=engine)
+
 
 
 

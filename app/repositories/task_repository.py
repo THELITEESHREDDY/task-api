@@ -2,17 +2,18 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 
 from app.models.task import Task
-from app.schemas.task import TaskCreate,TaskResponse
+from app.schemas.task import TaskCreate,TaskResponse,TaskUpdate
 
 class TaskRepository:
 
     def create(
         self,
-        db:Session, 
-        task_data: TaskCreate
+        db:Session,
+        user_id:int, 
+        task_data: TaskCreate,
     ) -> Task:
         
-        task = Task(title=task_data.title)
+        task = Task(title=task_data.title,owner_id=user_id)
 
         db.add(task)
         db.flush()
@@ -28,31 +29,35 @@ class TaskRepository:
         limit: int,
         offset: int,
         user_id:int
-    ):
+    )->list[TaskResponse]:
 
         return db.query(Task).filter(Task.owner_id==user_id).all()
 
 
     def get_by_id(
         self,
-        task_id,db:Session
-    ):
+        task_id:int,
+        user_id:int,
+        db:Session,
+    )->Task | None:
 
-        statement =  select(Task).where(Task.id==task_id)
-        
-        result = db.execute(statement)
-        task = result.scalar_one_or_none()
-
-        return task
-    
+       return (
+           db.query(Task)
+           .filter(
+               Task.id == task_id,
+               Task.owner_id == user_id,
+            )
+            .first()
+       )
     
 
     def update(
         self, 
-        task:TaskCreate,
-        data:TaskCreate,
+        task:TaskUpdate,
+        data:TaskUpdate,
     )->TaskCreate:
-        task.title = data.titleSS
+        task.title = data.title
+        task.completed = data.completed
 
         return task
         

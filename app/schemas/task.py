@@ -10,6 +10,10 @@ class TaskResponse(BaseModel):
     completed:bool
     model_config = ConfigDict(from_attributes=True)
 
+
+class TaskUpdate(TaskResponse):
+    pass 
+
 class TaskListResponse(BaseModel):
     items: list[TaskResponse]
     total: int
