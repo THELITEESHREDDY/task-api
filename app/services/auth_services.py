@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from fastapi import HTTPException
+from fastapi import HTTPException,status
 
 from app.security.hashing import verify_password
 from app.schemas.user import UserCreateDB,UserCreate
@@ -24,6 +24,16 @@ class AuthService:
         self,
         user:UserCreate
     ):
+        user = self.repository.get_by_email(
+            self.uow.db,
+            user.email,
+        )
+
+        if user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="email exists"
+            )
         
         hashed = hash_password(
             user.password

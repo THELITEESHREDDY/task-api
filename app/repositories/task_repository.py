@@ -25,7 +25,6 @@ class TaskRepository:
     def get_all(
         self,
         db: Session,
-        completed: bool | None,
         limit: int,
         offset: int,
         user_id:int

@@ -28,7 +28,7 @@ class TaskService:
         
         except:
 
-            self.unit_of_work.rollback()
+            self.uow.rollback()
 
             raise
 
@@ -36,6 +36,7 @@ class TaskService:
 
     
     def get_tasks(self,user_id:int,limit:int,offset:int):
+        print(user_id)
         return self.repository.get_all(self.uow.db,limit,offset,user_id)
     
 
